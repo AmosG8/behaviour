@@ -10,7 +10,7 @@ title(miceWeightDataset(RowInTarget).name);
 figure()
 plot(miceWeightDataset(RowInTarget).WeightChange(:));
 title(miceWeightDataset(RowInTarget).name);
-%AGGG
+
 
 % % keep for doing an averaege latter
 % Remember(:,RowInTarget)=miceWeightDataset(RowInTarget).Weight(:);
