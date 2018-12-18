@@ -1,7 +1,7 @@
 clear all
 
 L1_mice=[660,905,170,612,614];
-L2_mice=[660,905,170, 612];
+L2_mice=[660,905,170, 612, 614];
 L3_mice=[170];
 
 FileName = uigetfile('select the last AG_Mice_Dataset file');
@@ -10,7 +10,7 @@ load (FileName);
 %AG_Mice_Dataset=open('21-Nov-2018AG_Mice_Dataset.mat');
 %AllMice1=[];
 
-%% match the indices of mice in L1 with their indices at AG_Dataset
+%% match the indices of mice with their indices at AG_Dataset
 indexAtAG_Mice_DatasetStage1=AG_IndicesMatching(mice,L1_mice);
 indexAtAG_Mice_DatasetStage2=AG_IndicesMatching(mice,L2_mice);
 indexAtAG_Mice_DatasetStage3=AG_IndicesMatching(mice,L3_mice);

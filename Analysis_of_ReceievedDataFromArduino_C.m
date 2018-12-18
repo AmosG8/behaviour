@@ -67,34 +67,42 @@ end
                else 
                    ex_stage=3;
                end
+               day_summary.ExStage(selected_file-skipped,1)=ex_stage;
            case '905'
                if(datetime('09-Oct-2018')-ExDayMatFormat)>0
                    ex_stage=1;
                else
                    ex_stage=2;
                end
+               day_summary.ExStage(selected_file-skipped,1)=ex_stage;
            case '660'
                if(datetime('11-Oct-2018')-ExDayMatFormat)>0
                    ex_stage=1;
                else
                    ex_stage=2;
                end
+               day_summary.ExStage(selected_file-skipped,1)=ex_stage;
            case '612'
                if(datetime('23-Oct-2018')-ExDayMatFormat)>0
                    ex_stage=1;
                else
                    ex_stage=2;
                end
+               day_summary.ExStage(selected_file-skipped,1)=ex_stage;
            case '614'
                if(datetime('14-Nov-2018')-ExDayMatFormat)>0
                    ex_stage=1;
                else
                    ex_stage=2;
                end
-
+              day_summary.ExStage(selected_file-skipped,1)=ex_stage;
+           otherwise
+             disp('Unknown mouse name')
+             ContinueFlag_ValidFile=0;
+             skipped=skipped+1;
+             day_summary.ExLength_min=day_summary.ExLength_min(1:selected_file-skipped,1);
+             day_summary.filename=day_summary.filename(1:selected_file-skipped,1);
        end
-       
-    day_summary.ExStage(selected_file-skipped,1)=ex_stage;
    end
     %% test if the presentation was random. Relevant for training-stages 3,4,5
     if ex_stage>2 && ContinueFlag_ExTimeLength==1 && ContinueFlag_ValidFile
@@ -166,8 +174,15 @@ end
         prompt = 'For continuing with this file press 1 \n for suspecious flag press 5 \n to skip this file press 0 \n ';
         PlotContinue= input(prompt)
         if PlotContinue==0
-            day_summary.suspecious(selected_file-skipped,1)=0;
             skipped=skipped+1;
+            day_summary.suspecious=day_summary.suspecious(1:selected_file-skipped,1);
+            day_summary.filename= day_summary.filename(1:selected_file-skipped,1);
+            day_summary.ExLength_min=day_summary.ExLength_min(1:selected_file-skipped,1);
+            day_summary.ExStage=day_summary.ExStage(1:selected_file-skipped,1);
+            day_summary.Percent_One_licks=day_summary.Percent_One_licks(1:selected_file-skipped,1);
+            day_summary.total_Licks=day_summary.total_Licks(1:selected_file-skipped,1);           
+            day_summary.licksPerSec=day_summary.licksPerSec(1:selected_file-skipped,1);
+            
          elseif PlotContinue==5
             day_summary.suspecious(selected_file-skipped,1)=1;
           else 
@@ -361,12 +376,12 @@ end
     if ContinueFlag_ExTimeLength==1 && ContinueFlag_ValidFile && PlotContinue>0
        Temp=file{1,selected_file}(end-21:end);
        ExDayMatFormat=datetime(strcat(Temp(1:2),'-',Temp(3:5),'-',Temp(6:9)));
-       day_summary.ExDate{selected_file-skipped,1} = ExDayMatFormat;%string(ExDayMatFormat);
+       day_summary.ExDate(selected_file-skipped,1) = ExDayMatFormat;%string(ExDayMatFormat); AG { -( 18/12/18
        %% merge current row with former row of the same mouse at the same day 
        rows_counter=1;
        while rows_counter<(selected_file-skipped)
              % i'm going to chek the date and then to check name
-           if ((day_summary.ExDate{rows_counter,1}==ExDayMatFormat )& strcmp( ...
+           if ((day_summary.ExDate(rows_counter,1)==ExDayMatFormat )& strcmp( ...
                    day_summary.MouseName{selected_file-skipped,1},...
                    day_summary.MouseName{rows_counter,1}))
                
@@ -531,13 +546,19 @@ for mouse_num=1:length(mice_names)
     %now I'm doing the same for ex.stage and fliping the tables up side down
     %I'll get for each mouse an output table for each stage
     rows = TbyMouse.ExStage == 1;
-    mice(mouse_num).resultsStone=flipud(TbyMouse(rows, :));
+    mice(mouse_num).resultsStone= TbyMouse(rows, :); 
+    mice(mouse_num).resultsStone=sortrows(mice(mouse_num).resultsStone, 'ExDate' );
+    
+   % mice(mouse_num).resultsStone=flipud(TbyMouse(rows, :));
     
     rows = TbyMouse.ExStage == 2;
-    mice(mouse_num).resultsStageTwo=flipud(TbyMouse(rows, :)); 
+    mice(mouse_num).resultsStageTwo=TbyMouse(rows, :); 
+    mice(mouse_num).resultsStageTwo=sortrows(mice(mouse_num).resultsStageTwo, 'ExDate' );
     
     rows = TbyMouse.ExStage == 3;
-    mice(mouse_num).resultsStageThree=flipud(TbyMouse(rows, :)); 
+    mice(mouse_num).resultsStageThree=TbyMouse(rows, :); 
+    mice(mouse_num).resultsStageThree=sortrows(mice(mouse_num).resultsStageThree, 'ExDate' );
+    %mice(mouse_num).resultsStageThree=flipud(TbyMouse(rows, :)); 
 end
 %% save ouput
 prompt = 'If you''re going to add this data to a an existing dataset press 1 else press 0\n';
