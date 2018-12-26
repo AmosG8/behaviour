@@ -12,6 +12,7 @@ day_summary={};
 prompt = 'show plot? 1 for yes \n 5 for only if shorter than 12min \n 0 for no \n';
 show_plot= input(prompt) 
 skipped=0; ex_stage=0;
+store=[]; %stores file names of corrupted files with empty rows except the last
 %% define parameters
 %possibly define here the dates for changing stage for each mouse
 minExTime=6.5;%6.5;%in minutes
@@ -38,19 +39,34 @@ for selected_file=1:n
  %% skip a file if experiment time < = minExTime. go to the next file and don't write anything 
  % total time of the session in mili-seconds
 if ContinueFlag_ValidFile 
-    time = extractfield(data.ReceivedData,'experimentElapsedTime');        
-    if double(max(time))/1000 > minExTime*60 %max(time)/1000 = length of the experiment in seconds
-        ContinueFlag_ExTimeLength=1;
-        day_summary.ExLength_min(selected_file-skipped,1)=double(max(time))/60000;
-        day_summary.filename(selected_file-skipped,1)=file(1,selected_file);
-        file(1,selected_file)
-        if  show_plot==5 && double(max(time)/1000) <(12*60) 
-              Flag_short_ex=1;%will become relevant only for plots
-                          %else day_summary.suspecious(selected_file-skipped,1)=0;                          
+    time = extractfield(data.ReceivedData,'experimentElapsedTime'); 
+    %to exclude corrupted files in which there are empty cells until the
+    %last row instead of only int 
+    TimeTemp=whos('time');
+    if strcmp(TimeTemp.class,'int32')
+        if double(max(time))/1000 > minExTime*60 %max(time)/1000 = length of the experiment in seconds
+            ContinueFlag_ExTimeLength=1;
+            day_summary.ExLength_min(selected_file-skipped,1)=double(max(time))/60000;
+            day_summary.filename(selected_file-skipped,1)=file(1,selected_file);
+            file(1,selected_file)
+            if  show_plot==5 && double(max(time)/1000) <(12*60) 
+                  Flag_short_ex=1;%will become relevant only for plots
+                              %else day_summary.suspecious(selected_file-skipped,1)=0;                          
+            end
+        else
+             skipped=skipped+1;
+             ContinueFlag_ExTimeLength=0;
         end
-    else
-         skipped=skipped+1;
-         ContinueFlag_ExTimeLength=0;
+    else %for bug fix
+             skipped=skipped+1;
+             ContinueFlag_ExTimeLength=0;
+             if numel(store)>0%there are already data in store
+                 string(file{1,selected_file})
+                 store(end+1)=string(file{1,selected_file});
+             else
+                 string(file{1,selected_file})
+                 store(1,1)=string(file{1,selected_file});
+             end
     end
 end        
     %%    determine the experiment stage
