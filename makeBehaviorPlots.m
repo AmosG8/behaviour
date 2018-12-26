@@ -39,7 +39,7 @@ subplot(3,4,9);
   %figure(300);
   errorbar( MeanMice,SEMmice); 
   title({'level 3 1 mouse' , 'correct_location and time'});
-  axis([0 max_rows+2 0 60]);
+  axis([0 max_rows+2 0 70]);
   [all,MeanMice,SEMmice,max_rows]=AG_GatherGroupData...
       (L3_mice,mice, indexAtAG_Mice_DatasetStage3,'Percent_correct_location_time',3);
  
@@ -49,7 +49,7 @@ subplot(3,4,9);
       (L3_mice,mice, indexAtAG_Mice_DatasetStage3,'Percent_Time_Licks',3);
   errorbar( MeanMice,SEMmice); 
   title({'Correct Time', 'Licks'});
-  axis([0 max_rows+2 0 60])
+  axis([0 max_rows+2 0 70])
 
   subplot(3,4,11);
    % figure(302);
@@ -62,10 +62,10 @@ subplot(3,4,9);
    subplot(3,4,12);
    % figure(302);
   [all,MeanMice,SEMmice,max_rows]=AG_GatherGroupData...
-      (L3_mice,mice, indexAtAG_Mice_DatasetStage3,'TrialhitsPERC',3);
+      (L3_mice,mice, indexAtAG_Mice_DatasetStage3,'Trialhits_ofGO_PERC',3);% TrialhitsPERC
   errorbar( MeanMice,SEMmice); 
   title('Trialhits');
-  axis([0 max_rows+2 0 70])
+  axis([0 max_rows+2 35 75])
  
   %% single mice plots
   figure();  
